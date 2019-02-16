@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { 
+import {
   Alert, Text, SafeAreaView, SectionList
 } from 'react-native';
 import { CardItem } from './components/components';
@@ -45,6 +45,12 @@ render() {
             {label: '학과/학부별 개설과목 조회', icon: 'format-list-bulleted' ,onPress: ()=>{
               this.props.navigation.navigate('Subjects');
             }},
+            {label: '강의실별 시간표 조회', icon: 'format-list-bulleted' ,onPress: ()=>{
+              this.props.navigation.navigate('LectureRooms');
+            }},
+            {label: '교수별 시간표 조회', icon: 'format-list-bulleted' ,onPress: ()=>{
+              this.props.navigation.navigate('SchedulesProfs');
+            }},
             {label: '학점세이브 조회', icon: 'archive', onPress: ()=>{
               this.props.navigation.navigate('SavedCredits');
             }},
@@ -64,7 +70,7 @@ render() {
             {label: '앱 정보', icon: 'information', onPress: ()=>{
               this.props.navigation.navigate('About');
             }},
-            {label: '로그아웃', icon:'logout', onPress: ()=>{ 
+            {label: '로그아웃', icon:'logout', onPress: ()=>{
               Alert.alert(
                 '로그아웃',
                 '앱에서 로그아웃 하시겠습니까?',

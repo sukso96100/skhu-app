@@ -164,6 +164,7 @@ export default class DBHelper{
 
     });
   }
+
   async fetchTimeTable(){
     try{
       const today = new Date();
@@ -237,9 +238,90 @@ export default class DBHelper{
     }catch(err){
       console.log('Error while fetching timetable');
       console.log(err);
-    }
-
+    };
   }
+
+
+
+
+
+async fetchScheduleProfs(){
+    try{
+      const semester = DateTools.getSemesterCode(today.getMonth()+1);
+      // const semester = DateTools.getSemesterCode(5);
+
+      let timetable = await ForestApi.postToSam('/SSE/SSEAD/SSEAD05_GetList',
+        JSON.stringify({
+          'Yy': today.getFullYear(),
+          'Haggi': semester.code,
+          'HaggiNm': semester.name
+        }), false);
+      if(schedulesProfs.ok){
+        console.log('timetable');
+        let data = await schedulesProfs.json();
+
+        let tCurrent = (await this.getSchedulesProfsData());
+        let tcArr = tCurrent._array;
+        if(tCurrent.length > 0){
+          for(let item of data.DAT){
+            const dayOfWeek = DateTools.dayOfWeekStrToNum(item.YoilNm);
+            let toRemoveIndex = tcArr.findIndex(x => x.id.includes(`${item.GwamogCd}-${dayOfWeek}`));
+            tcArr.splice(toRemoveIndex, 1);
+          }
+        }
+        let dupCheck = {};
+        this.db.transaction(tx => {
+          console.log('inserting new timetable data');
+          for(let item of data.DAT){
+            const dayOfWeek = DateTools.dayOfWeekStrToNum(item.YoilNm);
+            console.log('inserting new timetable data');
+            if(dupCheck[`${item.GwamogCd}-${dayOfWeek}`]==undefined){
+              dupCheck[`${item.GwamogCd}-${dayOfWeek}`] = 0;
+            }else{
+              dupCheck[`${item.GwamogCd}-${dayOfWeek}`] += 1;
+            }
+            tx.executeSql(
+              'insert or replace into timetable values(?, ?, ?, ?, ?, time(?), time(?), ?, ?, ?);',
+              [`${item.GwamogCd}-${dayOfWeek}-${dupCheck[`${item.GwamogCd}-${dayOfWeek}`]}`, item.GwamogKorNm, item.GyosuNm, item.HosilCd,
+                Number(dayOfWeek), item.FrTm, item.ToTm, `${item.GwamogCd}-${item.Bunban}`,
+                semester.code, today.getFullYear()],
+              (tx, result)=>{
+                console.log('done insert timetable');
+                console.log(result);
+              },
+              (err)=>{
+                console.log('Error while insert timetable');
+                console.log(err);
+              });
+          }
+        });
+
+        this.db.transaction(tx =>{
+          for(let item of tcArr){
+            tx.executeSql(
+              'delete from timetable where id = ? and semester_code = ? and year = ?;',
+              [item.id, semester.code, today.getFullYear()],
+              (tx, result)=>{
+                console.log('removed outdated timetable item');
+                console.log(result);
+              },
+              (err)=>{
+                console.log('error delete timetable');
+                console.log(err);
+              }
+            );
+          }
+        });
+      }
+      console.log('done');
+    }catch(err){
+      console.log('Error while fetching timetable');
+      console.log(err);
+    };
+  }
+
+
+
 
   getNextClassInfo(){
     return new Promise((resolve, reject)=>{
