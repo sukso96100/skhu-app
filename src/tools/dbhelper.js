@@ -148,8 +148,7 @@ export default class DBHelper{
   queryAttendance(){
     return new Promise((resolve, reject)=>{
       const today = new Date();
-      const semester = DateTools.getSemesterCode(today.getMonth()+1);
-      // const semester = DateTools.getSemesterCode(5);
+      const semester = DateTools.getSemesterCode(today.getMonth()+1)
       this.db.transaction(tx =>
         tx.executeSql('select * from attendance where semester_code = ? and year = ?',
           [semester.code, today.getFullYear()],
@@ -160,8 +159,7 @@ export default class DBHelper{
             reject(err);
           }
         )
-      );
-
+      )
     });
   }
 
@@ -241,23 +239,20 @@ export default class DBHelper{
     };
   }
 
-
-
-
-
 async fetchScheduleProfs(){
     try{
       const semester = DateTools.getSemesterCode(today.getMonth()+1);
-      // const semester = DateTools.getSemesterCode(5);
 
-      let timetable = await ForestApi.postToSam('/SSE/SSEAD/SSEAD05_GetList',
+      let schedulesProfs = await ForestApi.postToSam('/SSE/SSEAD/SSEAD05_GetList',
         JSON.stringify({
           'Yy': today.getFullYear(),
           'Haggi': semester.code,
-          'HaggiNm': semester.name
+          'HaggiNm': semester.name,
+          'ProfStaffName': professor.name,
+          'Sosog': professor.major
         }), false);
       if(schedulesProfs.ok){
-        console.log('timetable');
+        console.log('schedulesProfs');
         let data = await schedulesProfs.json();
 
         let tCurrent = (await this.getSchedulesProfsData());
@@ -319,9 +314,6 @@ async fetchScheduleProfs(){
       console.log(err);
     };
   }
-
-
-
 
   getNextClassInfo(){
     return new Promise((resolve, reject)=>{

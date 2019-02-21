@@ -48,7 +48,7 @@ export default class Meal extends Component{
           data={meals}
           renderItem={({item})=>(
             <CardItem>
-              <Text>[]{item.day}요일 식단입니다]</Text>
+              <Text>[{item.day}요일 식단입니다]</Text>
               <Text style={{fontWeight: 'bold'}}>점심</Text>
               <Text>{item.lunch.a.diet}</Text>
               <Text>{item.lunch.b.diet}</Text>

@@ -30,6 +30,7 @@
     "react-native": "https://github.com/expo/react-native/archive/sdk-29.0.0.tar.gz",
     "react-navigation": "^2.11.2",
     "react-navigation-header-buttons": "^2.1.0",
-    "rn-snackbar": "^1.0.6"
+    "rn-snackbar": "^1.0.6",
+    "whatwg-fetch": "2.0.4"
   }
 }
