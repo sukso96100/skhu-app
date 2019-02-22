@@ -63,7 +63,7 @@ export default class SchedulesProfs extends Component{
 
                   {/* 검색창 */}
                   <BottomModal
-                      title='공지사항 검색'
+                      title='교수님별 시간표 검색'
                       visible={this.state.showSearchModal}
                       onRequestClose={() => this.setState({ showSearchModal: false })}
                       buttons={[
