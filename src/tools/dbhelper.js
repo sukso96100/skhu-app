@@ -243,17 +243,16 @@ async fetchScheduleProfs(){
     try{
       const semester = DateTools.getSemesterCode(today.getMonth()+1);
 
-      let schedulesProfs = await ForestApi.postToSam('/SSE/SSEAD/SSEAD05_GetList',
+      let SchedulesProfs = await ForestApi.postToSam('/SSE/SSEAD/SSEAD05_GetStaff',
         JSON.stringify({
           'Yy': today.getFullYear(),
           'Haggi': semester.code,
           'HaggiNm': semester.name,
-          'ProfStaffName': professor.name,
-          'Sosog': professor.major
+          'ProfStaffName': professor.name
         }), false);
       if(schedulesProfs.ok){
-        console.log('schedulesProfs');
-        let data = await schedulesProfs.json();
+        console.log('SchedulesProfs');
+        let data = await SchedulesProfs.json();
 
         let tCurrent = (await this.getSchedulesProfsData());
         let tcArr = tCurrent._array;
@@ -266,17 +265,17 @@ async fetchScheduleProfs(){
         }
         let dupCheck = {};
         this.db.transaction(tx => {
-          console.log('inserting new timetable data');
+          console.log('inserting new schedulesProfs data');
           for(let item of data.DAT){
             const dayOfWeek = DateTools.dayOfWeekStrToNum(item.YoilNm);
-            console.log('inserting new timetable data');
+            console.log('inserting new schedulesProfs data');
             if(dupCheck[`${item.GwamogCd}-${dayOfWeek}`]==undefined){
               dupCheck[`${item.GwamogCd}-${dayOfWeek}`] = 0;
             }else{
               dupCheck[`${item.GwamogCd}-${dayOfWeek}`] += 1;
             }
             tx.executeSql(
-              'insert or replace into timetable values(?, ?, ?, ?, ?, time(?), time(?), ?, ?, ?);',
+              'insert or replace into schedulesProfs values(?, ?, ?, ?, ?, time(?), time(?), ?, ?, ?);',
               [`${item.GwamogCd}-${dayOfWeek}-${dupCheck[`${item.GwamogCd}-${dayOfWeek}`]}`, item.GwamogKorNm, item.GyosuNm, item.HosilCd,
                 Number(dayOfWeek), item.FrTm, item.ToTm, `${item.GwamogCd}-${item.Bunban}`,
                 semester.code, today.getFullYear()],
@@ -285,7 +284,7 @@ async fetchScheduleProfs(){
                 console.log(result);
               },
               (err)=>{
-                console.log('Error while insert timetable');
+                console.log('Error while insert schedulesProfse');
                 console.log(err);
               });
           }
@@ -294,14 +293,14 @@ async fetchScheduleProfs(){
         this.db.transaction(tx =>{
           for(let item of tcArr){
             tx.executeSql(
-              'delete from timetable where id = ? and semester_code = ? and year = ?;',
+              'delete from schedulesProfs where id = ? and semester_code = ? and year = ?;',
               [item.id, semester.code, today.getFullYear()],
               (tx, result)=>{
                 console.log('removed outdated timetable item');
                 console.log(result);
               },
               (err)=>{
-                console.log('error delete timetable');
+                console.log('error delete schedulesProfs');
                 console.log(err);
               }
             );
@@ -310,7 +309,7 @@ async fetchScheduleProfs(){
       }
       console.log('done');
     }catch(err){
-      console.log('Error while fetching timetable');
+      console.log('Error while fetching schedulesProfs');
       console.log(err);
     };
   }

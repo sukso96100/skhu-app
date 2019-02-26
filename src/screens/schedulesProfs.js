@@ -26,7 +26,7 @@ export default class SchedulesProfs extends Component{
     const today = new Date();
     const semester = DateTools.getSemesterCode(today.getMonth()+1);
     this.state = {
-      showSearchModal: false,
+      showSearchModal: true,
       year: today.getFullYear().toString(),
       semester: semester.name,
       semesterCode: semester.code,
@@ -112,7 +112,7 @@ export default class SchedulesProfs extends Component{
   async loadSearchResults(){
     try{
       this.setState({refreshing: true});
-      const results = await ForestApi.postToSam('/SSE/SSEAD/SSEAD05_GetList',
+      const results = await ForestApi.postToSam('/SSE/SSEAD/SSEAD05_GetStaff',
         JSON.stringify({
           'Haggi': this.state.semesterCode,
           'HaggiNm': this.state.semester,
