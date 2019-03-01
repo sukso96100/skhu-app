@@ -314,6 +314,31 @@ async fetchScheduleProfs(){
     };
   }
 
+  getSchedulesProfsData(){
+    return new Promise((resolve, reject)=>{
+      const today = new Date();
+      const semester = DateTools.getSemesterCode(today.getMonth()+1);
+      // const semester = DateTools.getSemesterCode(5);
+      this.db.transaction(tx => {
+        tx.executeSql(
+          `select * from SchedulesProfs
+           where semester_code = ? and year = ?
+           order by day asc, starts_at asc;`,
+          [semester.code, today.getFullYear()],
+          (tx, result)=>{
+            resolve(result.rows);
+          },
+          (err)=>{
+            reject(err);
+          }
+        );
+      });
+    });
+  }
+  }
+
+
+
   getNextClassInfo(){
     return new Promise((resolve, reject)=>{
       const today = new Date();
