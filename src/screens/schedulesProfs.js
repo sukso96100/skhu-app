@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { MaterialIcons } from '@expo/vector-icons';
 import {
-    View, FlatList, Text, ActivityIndicator, StyleSheet,
-    ScrollView, SafeAreaView, Button, Image, TouchableOpacity, RefreshControl, Modal, TextInput, Picker, SectionList
+  View, FlatList, Text, ActivityIndicator, StyleSheet,
+  ScrollView, SafeAreaView, Button, Image, TouchableOpacity, RefreshControl, Modal, TextInput, Picker, SectionList
 } from 'react-native';
 import { CardView, CardItem, BottomModal } from '../components/components';
 import { MaterialHeaderButtons } from '../components/headerButtons';
@@ -32,115 +32,125 @@ export default class SchedulesProfs extends Component{
       semesterCode: semester.code,
       subject: '',
       major: '',
-      professor:'',
+      name:'',
       result: [],
       refreshing: false,
       firstLoad: true
     };
+    this.data = [];
   }
   componentDidMount(){
-    this.loadSearchResults();
+    this.loadList();
   }
 
   render() {
-      if (this.state.firstLoad) {
-          return (
-              <View style={{ justifyContent: 'center', padding: 32 }}>
-                  <ActivityIndicator size="large" color={BuildConfigs.primaryColor} />
-              </View>
-          );
-      } else {
-          return (
-              <View>
-                  <CardItem style={{}} onPress={() => this.setState({ showSearchModal: true })}
-                      style={{ flex: 0, flexDirection: 'row' }} elevate={true}>
-                      <Text style={{ flex: 1 }}>
-                          {this.state.title} / {this.state.date}
-                      </Text>
-                      <MaterialIcons name="search" size={20} style={{ flex: 0 }} />
-                  </CardItem>
+    if (this.state.firstLoad) {
+      return (
+        <View style={{ justifyContent: 'center', padding: 32 }}>
+          <ActivityIndicator size="large" color={BuildConfigs.primaryColor} />
+        </View>
+      );
+    } else {
+      return (
+        <View>
+          <CardItem style={{}} onPress={() => this.setState({ showSearchModal: true })}
+            style={{ flex: 0, flexDirection: 'row' }} elevate={true}>
+            <Text style={{ flex: 1 }}>
+              {this.state.name} / {this.state.date}
+            </Text>
+            <MaterialIcons name="search" size={20} style={{ flex: 0 }} />
+          </CardItem>
 
+          <FlatList
+            data={this.state.result}
+            refreshControl={
+              <RefreshControl
+                refreshing={this.state.refreshing}
+                onRefresh={this.search}
+                tintColor={BuildConfigs.primaryColor}
+                colors={[BuildConfigs.primaryColor]}
+              />
+            }
+            ListFooterComponent={()=>(
+              <CardItem style={{height: 50}}/>
+            )}
+            renderItem={({item})=>
+              <CardItem onPress={()=>{
+                // this.props.navigation.navigate('SyllabusDetails', {
+                //   subjectCode: item.subjectCode,
+                //   classCode: item.classCode,
+                //   semesterCode: this.state.semesterCode,
+                //   year: this.state.year
+                // });
+              }}>
+                {/* <Text style={{fontWeight: 'bold'}}>{item.subject}({item.subjectCode}-{item.classCode})</Text>
+                <Text>{item.college} {item.major} | {item.professor}({item.professorNo})</Text> */}
+                <Text>{item.StaffName}</Text>
+              </CardItem>
+            }
+          />
 
-                  {/* 검색창 */}
-                  <BottomModal
-                      title='교수님별 시간표 검색'
-                      visible={this.state.showSearchModal}
-                      onRequestClose={() => this.setState({ showSearchModal: false })}
-                      buttons={[
-                          {
-                              label: '취소', onPress: () => {
-                                  this.setState({ showSearchModal: false });
-                              }
-                          },
-                          {
-                              label: '검색', onPress: () => {
-                                  this.setState({ showSearchModal: false });
-                                  this.loadSearchResults();
-                              }
-                          }
-                      ]}>
-                      <CardItem>
-                        <TextInput placeholder={'년도(필수)'} defaultValue={this.state.year} style={{fontSize: 16, padding: 8}}
-                          onChangeText={(text)=>this.setState({year: text})}/>
-                      </CardItem>
-                      <CardItem>
-                        <Picker
-                          selectedValue={this.state.semesterCode}
-                          onValueChange={(itemValue, itemIndex) => {
-                            this.setState({
-                              semesterCode: itemValue,
-                              semester: ['1학기', '2학기', '여름학기', '겨울학기'][itemIndex]
-                            });
-                          }}>
-                          <Picker.Item label="1학기" value="Z0101" />
-                          <Picker.Item label="2학기" value="Z0102" />
-                          <Picker.Item label="여름학기" value="Z0103" />
-                          <Picker.Item label="겨울학기" value="Z0104" />
-                        </Picker>
-                      </CardItem>
-                      <CardItem>
-                          <TextInput placeholder={'교수님 성함(필수)'} style={{ fontSize: 16, padding: 8 }}
-                              defaultValue={this.state.title}
-                              onChangeText={(text) => this.setState({ title: text })} />
-                      </CardItem>
-                  </BottomModal>
-              </View>
-          );
-      }
+          {/* 검색창 */}
+          <BottomModal
+            title='교수님별 시간표 검색'
+            visible={this.state.showSearchModal}
+            onRequestClose={() => this.setState({ showSearchModal: false })}
+            buttons={[
+              {
+                label: '취소', onPress: () => {
+                  this.setState({ showSearchModal: false });
+                }
+              },
+              {
+                label: '검색', onPress: () => {
+                  this.setState({ showSearchModal: false });
+                  this.search();
+                }
+              }
+            ]}>
+            <CardItem>
+              <TextInput placeholder={'년도(필수)'} defaultValue={this.state.year} style={{fontSize: 16, padding: 8}}
+                onChangeText={(text)=>this.setState({year: text})}/>
+            </CardItem>
+            <CardItem>
+              <Picker
+                selectedValue={this.state.semesterCode}
+                onValueChange={(itemValue, itemIndex) => {
+                  this.setState({
+                    semesterCode: itemValue,
+                    semester: ['1학기', '2학기', '여름학기', '겨울학기'][itemIndex]
+                  });
+                }}>
+                <Picker.Item label="1학기" value="Z0101" />
+                <Picker.Item label="2학기" value="Z0102" />
+                <Picker.Item label="여름학기" value="Z0103" />
+                <Picker.Item label="겨울학기" value="Z0104" />
+              </Picker>
+            </CardItem>
+            <CardItem>
+              <TextInput placeholder={'교수님 성함(필수)'} style={{ fontSize: 16, padding: 8 }}
+                defaultValue={this.state.name}
+                onChangeText={(text) => this.setState({ name: text })} />
+            </CardItem>
+          </BottomModal>
+        </View>
+      );
+    }
   }
 
-  async loadSearchResults(){
+  async loadList(){
     try{
       this.setState({refreshing: true});
       const results = await ForestApi.postToSam('/SSE/SSEAD/SSEAD05_GetStaff',
         JSON.stringify({
           'Haggi': this.state.semesterCode,
           'HaggiNm': this.state.semester,
-          'Yy': this.state.year,
-          'GwamogParam': this.state.subject,
-          'ProfParam': this.state.professor,
-          'SosogParam': this.state.major
+          'Yy': this.state.year
         }));
-      let arr = [];
       if(results.ok){
         const data = await results.json();
-        for(let item of data.DAT){
-          arr.push({
-            key: `${item.GwamogCd}-${item.Bunban}`,
-            subjectCode: item.GwamogCd,
-            classCode: item.Bunban,
-            subject: item.GwamogKorNm,
-            college: item.GaeseolDaehagNm,
-            depart: item.GaeseolHagbuNm,
-            major: item.GaeseolSosogNm,
-            professor: item.ProfKorNm,
-            professorNo: item.ProfNo,
-            availablity: item.SueobGyehoegYn
-          });
-        }
-        console.log(arr);
+        this.data = data.DAT;
         this.setState({
-          result: arr,
           refreshing: false,
           firstLoad: false
         });
@@ -148,5 +158,11 @@ export default class SchedulesProfs extends Component{
     }catch(err){
       console.log(err);
     }
+  }
+
+  search(){
+    let result = this.data.filter(item => item.StaffName.includes(this.state.name));
+    this.setState({result: result});
+
   }
 }
