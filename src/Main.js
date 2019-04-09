@@ -249,8 +249,10 @@ class Meal extends Component {
               </View>
             </View>
             <View>
+
               <Text style={{ fontWeight: 'bold', fontSize: 16 }}>석식</Text>
               <Text style={{ marginBottom :10 }}>{meal.dinner.a.diet}</Text>
+
             </View>
           </View>
         </View>
@@ -269,8 +271,7 @@ class NoticeSchedule extends Component {
     super(props);
     this.state = {
       isLoading: true,
-      writer: [],
-      title: []
+      dataSource: []
     };
   }
   getData() {
@@ -280,13 +281,12 @@ class NoticeSchedule extends Component {
         this.setState({
           isLoading: false,
           dataSource: responseJson,
-          writer: responseJson.board_writer,
-          title: responseJson.board_title
         });
       })
       .catch((error) => {
         console.error(error);
       });
+
 
   }
 
@@ -305,8 +305,32 @@ class NoticeSchedule extends Component {
     } else {
       content = (
         <View>
-          <View style={{ flexDirection: 'row' }}>
+          <View style={{ flexDirection: 'column' }}>
 
+            <Text style={{ fontWeight: 'bold', fontSize: 16 }}>제목</Text>
+            <Text style={{marginBottom: 16}}>{this.state.dataSource.map(  //json값에서 조건으로 빼오기
+              function (elem, index) {
+                if (index == 0)
+                  return elem.board_title;
+              }
+            )}
+            </Text>
+            <Text style={{ fontWeight: 'bold', fontSize: 16 }}>날짜</Text>
+            <Text style={{marginBottom: 16}}>{this.state.dataSource.map(  //json값에서 조건으로 빼오기
+              function (elem, index) {
+                if (index == 0)
+                  return elem.board_insertdate;
+              }
+            )}
+            </Text>
+            <Text style={{ fontWeight: 'bold', fontSize: 16 }}>내용</Text>
+            <Text style={{marginBottom: 16}}>{this.state.dataSource.map(  //json값에서 조건으로 빼오기
+              function (elem, index) {
+                if (index == 0)
+                  return elem.board_content;
+              }
+            )}
+            </Text>
           </View>
           <View style={{ flexDirection: 'row' }}>
             <Text style={{ color: 'grey' }}>공지사항 더 보기</Text>
@@ -318,13 +342,6 @@ class NoticeSchedule extends Component {
     return (
       <CardView onPress={this.props.onPress} elevate={true}>
         {content}
-        <FlatList
-
-          initialNumToRender={2}
-          data={this.state.dataSource}
-          renderItem={({ item }) =>
-            <Text>{item.no}: {item.board_title}\n {item.board_content}</Text>}
-        />
 
       </CardView>
     );

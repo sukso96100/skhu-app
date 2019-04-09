@@ -23,25 +23,30 @@ export default class NoticeScreen extends Component {
     };
     constructor(props) {
         super(props);
-        const today = new Date();
-        const semester = DateTools.getSemesterCode(today.getMonth() + 1);
         this.state = {
-            showSearchModal: false,
-            year: today.getFullYear().toString(),
-            semester: semester.name,
-            semesterCode: semester.code,
-            title: '',
-            date: '',
-            result: [],
-            refreshing: false,
-            firstLoad: true
+            isLoading: true,
+            dataSource: [],
+            showSearchModal: false
         };
     }
     componentDidMount() {
-        this.loadSearchResults();
+        this.getData();
+    }
+    getData() {
+        return fetch('http://15.164.16.2:8082/ping')
+            .then((response) => response.json())
+            .then((responseJson) => {
+                this.setState({
+                    isLoading: false,
+                    dataSource: responseJson,
+                });
+            })
+            .catch((error) => {
+                console.error(error);
+            });
     }
     render() {
-        if (this.state.firstLoad) {
+        if (this.state.isLoading) {
             return (
                 <View style={{ justifyContent: 'center', padding: 32 }}>
                     <ActivityIndicator size="large" color={BuildConfigs.primaryColor} />
@@ -60,34 +65,20 @@ export default class NoticeScreen extends Component {
                     </CardItem>
 
                     {/* 렌더링 */}
+
                     <FlatList
-                        data={this.state.result}
-                        refreshControl={
-                            <RefreshControl
-                                refreshing={this.state.refreshing}
-                                onRefresh={this.loadSearchResults}
-                                tintColor={BuildConfigs.primaryColor}
-                                colors={[BuildConfigs.primaryColor]}
-                            />
-                        }
-                        ListFooterComponent={() => (
-                            <CardItem style={{ height: 50 }} />
-                        )}
+                        initialNumToRender={10}
+                        data={this.state.dataSource}
                         renderItem={({ item }) =>
                             <SafeAreaView>
                                 <ScrollView>
                                     <View style={{ marginRight: 50, marginLeft: 14, }}>
                                         <CardView style={{ flex: 0, flexDirection: 'row' }} >
                                             <View>
-                                                <Text style={{ fontWeight: 'bold' }}>제목 : {item.subject}</Text>
+                                                <Text style={{ fontWeight: 'bold' }}>제목 : {item.board_title}</Text>
+                                                <Text style={{ fontWeight: 'bold' }}>날짜 : {item.board_insertdate}</Text>
                                                 <Text> </Text>
-                                                <Text style={{ fontWeight: 'bold' }}>날짜 : 2019.02.16.</Text>
-                                                <Text> </Text>
-                                                <Text>내용 : </Text>
-                                                <Text>노을은 오고 있었다.</Text>
-                                                <Text>산너머 갈매 하늘이</Text>
-                                                <Text>호수에 가득 담기고</Text>
-                                                <Text>아까부터 노을은 오고 있었다.</Text>
+                                                <Text>{item.board_content}</Text>
                                             </View>
                                         </CardView>
                                     </View>
@@ -167,4 +158,5 @@ export default class NoticeScreen extends Component {
             console.log(err);
         }
     }
+
 }
