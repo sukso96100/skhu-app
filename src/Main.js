@@ -207,23 +207,13 @@ class Meal extends Component {
       // TODO: 오늘 구하는 공식 들어가야함 일단은 첫번째 인덱스 배열 값 가져옴...
 
       let day = new Date().getDay(); //0 : 일요일,  1: 월요일...
-<<<<<<< HEAD
-      if(day==0 || day==5) //토욜이욜제외
-        day=4;     
-      else
-        day -= 1;
-        
-      let meal = meals[day]; //0:월요일 1:화요일...
-      
-=======
+
       if (day == 0 || day == 5) //토욜이욜제외
         day = 4;
       else
         day -= 1;
 
       let meal = meals[day]; //0:월요일 1:화요일...
-
->>>>>>> 3368552d2caf28013d44863adf7ddea8a5464b6f
 
       this.setState({
         meal,
@@ -253,16 +243,10 @@ class Meal extends Component {
               <Text>{meal.day}</Text>
               <Text style={{ fontWeight: 'bold' }}>점심</Text>
               <Text>{meal.lunch.a.diet}</Text>
-<<<<<<< HEAD
-              <Text style={{fontWeight: 'bold'}}>일품</Text>
-              <Text>{meal.lunch.b.diet}</Text>
-              
-              <Text style={{fontWeight: 'bold'}}>저녁</Text>
-=======
+
               <Text style={{ fontWeight: 'bold' }}>일품</Text>
               <Text>{meal.lunch.b.diet}</Text>
               <Text style={{ fontWeight: 'bold' }}>저녁</Text>
->>>>>>> 3368552d2caf28013d44863adf7ddea8a5464b6f
               <Text>{meal.dinner.a.diet}</Text>
             </View>
           </View>
@@ -286,8 +270,7 @@ class NoticeSchedule extends Component {
     super(props);
     this.state = {
       isLoading: true,
-      writer: [],
-      title: []
+      dataSource: []
     };
   }
   getData() {
@@ -297,13 +280,12 @@ class NoticeSchedule extends Component {
         this.setState({
           isLoading: false,
           dataSource: responseJson,
-          writer: responseJson.board_writer,
-          title: responseJson.board_title
         });
       })
       .catch((error) => {
         console.error(error);
       });
+
 
   }
 
@@ -322,8 +304,32 @@ class NoticeSchedule extends Component {
     } else {
       content = (
         <View>
-          <View style={{ flexDirection: 'row' }}>
+          <View style={{ flexDirection: 'column' }}>
 
+            <Text style={{ fontWeight: 'bold', fontSize: 16 }}>제목</Text>
+            <Text style={{marginBottom: 16}}>{this.state.dataSource.map(  //json값에서 조건으로 빼오기
+              function (elem, index) {
+                if (index == 0)
+                  return elem.board_title;
+              }
+            )}
+            </Text>
+            <Text style={{ fontWeight: 'bold', fontSize: 16 }}>날짜</Text>
+            <Text style={{marginBottom: 16}}>{this.state.dataSource.map(  //json값에서 조건으로 빼오기
+              function (elem, index) {
+                if (index == 0)
+                  return elem.board_insertdate;
+              }
+            )}
+            </Text>
+            <Text style={{ fontWeight: 'bold', fontSize: 16 }}>내용</Text>
+            <Text style={{marginBottom: 16}}>{this.state.dataSource.map(  //json값에서 조건으로 빼오기
+              function (elem, index) {
+                if (index == 0)
+                  return elem.board_content;
+              }
+            )}
+            </Text>
           </View>
           <View style={{ flexDirection: 'row' }}>
             <Text style={{ color: 'grey' }}>공지사항 더 보기</Text>
@@ -335,13 +341,6 @@ class NoticeSchedule extends Component {
     return (
       <CardView onPress={this.props.onPress} elevate={true}>
         {content}
-        <FlatList
-        
-          initialNumToRender={2}
-          data={this.state.dataSource}
-          renderItem={({ item }) =>
-            <Text>{item.no}: {item.board_title}\n {item.board_content}</Text>}
-        />
 
       </CardView>
     );
