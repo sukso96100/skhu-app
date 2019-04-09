@@ -85,7 +85,6 @@ export default class SyllabusDetails extends Component{
 }
 
 
-시간표 표시해주는 뷰분 긁어온것
 render(){
   if(this.state.isLoading){
     return(

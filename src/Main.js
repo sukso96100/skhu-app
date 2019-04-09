@@ -202,7 +202,15 @@ class Meal extends Component {
   componentDidMount() {
     FetchHelper.fetchMealsData(this.props.url).then(meals => {
       // TODO: 오늘 구하는 공식 들어가야함 일단은 첫번째 인덱스 배열 값 가져옴...
-      const meal = meals[0];
+
+      let day = new Date().getDay(); //0 : 일요일,  1: 월요일...
+      if(day==0 || day==5) //토욜이욜제외
+        day=4;     
+      else
+        day -= 1;
+        
+      let meal = meals[day]; //0:월요일 1:화요일...
+      
 
       this.setState({
         meal,
@@ -232,8 +240,9 @@ class Meal extends Component {
               <Text>{meal.day}</Text>
               <Text style={{fontWeight: 'bold'}}>점심</Text>
               <Text>{meal.lunch.a.diet}</Text>
+              <Text style={{fontWeight: 'bold'}}>일품</Text>
               <Text>{meal.lunch.b.diet}</Text>
-
+              
               <Text style={{fontWeight: 'bold'}}>저녁</Text>
               <Text>{meal.dinner.a.diet}</Text>
             </View>
