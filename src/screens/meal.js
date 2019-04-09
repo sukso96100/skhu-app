@@ -51,6 +51,7 @@ export default class Meal extends Component{
               <Text>[{item.day}요일 식단입니다]</Text>
               <Text style={{fontWeight: 'bold'}}>점심</Text>
               <Text>{item.lunch.a.diet}</Text>
+              <Text style={{fontWeight: 'bold'}}>일품</Text>
               <Text>{item.lunch.b.diet}</Text>
               <Text style={{fontWeight: 'bold'}}>저녁</Text>
               <Text>{item.dinner.a.diet}</Text>
