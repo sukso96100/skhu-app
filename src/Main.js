@@ -313,24 +313,27 @@ class NoticeSchedule extends Component {
       content = (
         <View>
           <View style={{ flexDirection: 'column' }}>
-
-            <Text style={{ fontWeight: 'bold', fontSize: 16 }}>제목</Text>
-            <Text style={{ marginBottom: 16 }}>{this.state.dataSource.map(  //json값에서 조건으로 빼오기
+          <View style={{ flexDirection: 'row' }}>
+            <Text style={{ fontWeight: 'bold', fontSize: 16 }}>제목: </Text>
+            <Text>{this.state.dataSource.map(  //json값에서 조건으로 빼오기
               function (elem, index) {
                 if (index == 0)
                   return elem.board_title;
               }
             )}
             </Text>
-            <Text style={{ fontWeight: 'bold', fontSize: 16 }}>날짜</Text>
-            <Text style={{ marginBottom: 16 }}>{this.state.dataSource.map(  //json값에서 조건으로 빼오기
+            </View>
+            <View style={{ flexDirection: 'row' }}>
+            <Text style={{ fontWeight: 'bold', fontSize: 16 }}>날짜: </Text>
+            <Text>{this.state.dataSource.map(  //json값에서 조건으로 빼오기
               function (elem, index) {
                 if (index == 0)
                   return elem.board_insertdate;
               }
             )}
             </Text>
-            <Text style={{ fontWeight: 'bold', fontSize: 16 }}>내용</Text>
+            </View>
+            <Text style={{ fontWeight: 'bold', fontSize: 16 }}>내용: </Text>
             <Text style={{ marginBottom: 16 }}>{this.state.dataSource.map(  //json값에서 조건으로 빼오기
               function (elem, index) {
                 if (index == 0)

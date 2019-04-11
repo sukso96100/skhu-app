@@ -75,9 +75,9 @@ export default class NoticeScreen extends Component {
                                     <View style={{ marginRight: 50, marginLeft: 14, }}>
                                         <CardView style={{ flex: 0, flexDirection: 'row' }} >
                                             <View>
-                                                <Text style={{ fontWeight: 'bold' }}>제목 : {item.board_title}</Text>
-                                                <Text style={{ fontWeight: 'bold' }}>날짜 : {item.board_insertdate}</Text>
-                                                <Text> </Text>
+                                                <Text style={{ fontWeight: 'bold' }}>제목: {item.board_title}</Text>
+                                                <Text style={{ fontWeight: 'bold' }}>날짜: {item.board_insertdate}</Text>
+                                                <Text>내용: </Text>
                                                 <Text>{item.board_content}</Text>
                                             </View>
                                         </CardView>
