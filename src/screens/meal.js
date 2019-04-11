@@ -3,7 +3,7 @@ import { CardItem, CardView } from '../components/components';
 import { ScrollView, SafeAreaView, View, Text, ActivityIndicator, FlatList } from 'react-native';
 import FetchHelper from '../tools/fetchHelper';
 import BuildConfigs from '../config';
-
+import { MaterialCommunityIcons } from '@expo/vector-icons';  //아이콘임포트
 
 
 export default class Meal extends Component {
@@ -11,7 +11,7 @@ export default class Meal extends Component {
     const { params } = navigation.state;
 
     return {
-      title: '학생 식단',
+      title: '주간 식단',
     };
   };
 
@@ -46,6 +46,7 @@ export default class Meal extends Component {
     }
     else {
       return (
+        // 디자인 수정전
         // <View>
         //   <FlatList
         //     data={meals}
@@ -90,39 +91,33 @@ export default class Meal extends Component {
             renderItem={({ item }) => (
               <SafeAreaView>
                 <ScrollView>
-                  <View style={{ marginRight: 50, marginLeft: 14, }}>
-                    <CardView style={{ flex: 0, flexDirection: 'row' }} >
-                  
-                      <View>
-                        <Text style={{ fontWeight: 'bold', fontSize: 20, marginBottom: 10 }}>[{item.day} 식단]</Text>
-                        <Text style={{ fontWeight: 'bold', fontSize: 16 }}>학식</Text>
-                        <Text style={{ marginBottom :10 }}>{item.lunch.a.diet}</Text>
-                        <Text style={{ fontWeight: 'bold', fontSize: 16 }}>일품</Text>
-                        <Text style={{ marginBottom :10 }}>{item.lunch.b.diet}</Text>
-                        <Text style={{ fontWeight: 'bold', fontSize: 16 }}>석식</Text>
-                        <Text style={{ marginBottom :5 }}>{item.dinner.a.diet}</Text>
+                  <View>
+                    <View style={{ flexDirection: 'column' }} >
+                      <View style={{ flexDirection: 'row' }}>
+                        <MaterialCommunityIcons name="rice" size={20} />
+                        <Text style={{ fontWeight: 'bold', fontSize: 20, marginBottom: 5 }}>{item.day} 식단</Text>
                       </View>
-                    </CardView>
+                      <View style={{ flexDirection: 'row' }}>
+                        <CardView style={{ backgroundColor: 'whitesmoke', margin: 5, flex: 1 }}>
+                          <Text style={{ fontWeight: 'bold', fontSize: 16 }}>학식</Text>
+                          <Text style={{ marginBottom: 10 }}>{item.lunch.a.diet}</Text>
+                        </CardView>
+                        <CardView style={{ backgroundColor: 'whitesmoke', margin: 5, flex: 1 }}>
+                          <Text style={{ fontWeight: 'bold', fontSize: 16 }}>일품</Text>
+                          <Text style={{ marginBottom: 10 }}>{item.lunch.b.diet}</Text>
+                        </CardView>
+                        <CardView style={{ backgroundColor: 'whitesmoke', margin: 5, flex: 1 }}>
+                          <Text style={{ fontWeight: 'bold', fontSize: 16 }}>석식</Text>
+                          <Text style={{ marginBottom: 5 }}>{item.dinner.a.diet}</Text>
+                        </CardView>
+                      </View>
+                    </View>
                   </View>
                 </ScrollView>
               </SafeAreaView>)}
           />
         </View>
 
-        // <FlatList
-        //   data={meals}
-        //   renderItem={({ item }) => (
-        //     <CardItem>
-        //       <Text>[{item.day}요일 식단입니다]</Text>
-        //       <Text style={{ fontWeight: 'bold' }}>점심</Text>
-        //       <Text>{item.lunch.a.diet}</Text>
-        //       <Text style={{ fontWeight: 'bold' }}>일품</Text>
-        //       <Text>{item.lunch.b.diet}</Text>
-        //       <Text style={{ fontWeight: 'bold' }}>저녁</Text>
-        //       <Text>{item.dinner.a.diet}</Text>
-        //     </CardItem>
-        //   )}
-        // />
       );
     }
   }
