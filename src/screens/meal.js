@@ -3,7 +3,8 @@ import { CardItem, CardView } from '../components/components';
 import { ScrollView, SafeAreaView, View, Text, ActivityIndicator, FlatList } from 'react-native';
 import FetchHelper from '../tools/fetchHelper';
 import BuildConfigs from '../config';
-import { MaterialIcons } from '@expo/vector-icons';
+
+
 
 export default class Meal extends Component {
   static navigationOptions = ({ navigation, navigationOptions }) => {
@@ -91,8 +92,9 @@ export default class Meal extends Component {
                 <ScrollView>
                   <View style={{ marginRight: 50, marginLeft: 14, }}>
                     <CardView style={{ flex: 0, flexDirection: 'row' }} >
+                  
                       <View>
-                        <Text style={{ fontWeight: 'bold', fontSize: 20 }}>[{item.day} 식단]</Text>
+                        <Text style={{ fontWeight: 'bold', fontSize: 20, marginBottom: 10 }}>[{item.day} 식단]</Text>
                         <Text style={{ fontWeight: 'bold', fontSize: 16 }}>학식</Text>
                         <Text style={{ marginBottom :10 }}>{item.lunch.a.diet}</Text>
                         <Text style={{ fontWeight: 'bold', fontSize: 16 }}>일품</Text>

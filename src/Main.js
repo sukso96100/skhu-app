@@ -12,7 +12,7 @@ import DateTools from './tools/datetools';
 import DBHelper from './tools/dbhelper';
 import FetchHelper from './tools/fetchHelper';
 import SnackBar from 'rn-snackbar';
-import { MaterialCommunityIcons } from '@expo/vector-icons';  //추가임포트
+import { MaterialCommunityIcons } from '@expo/vector-icons';  //아이콘임포트
 
 
 export default class Main extends Component {
@@ -62,6 +62,7 @@ export default class Main extends Component {
             <NoticeSchedule onPress={() => {
               this.props.navigation.navigate('NoticeScreen');
             }} />
+
             <Text style={{ fontSize: 20, marginTop: 16 }}>학식</Text>
             <Meal url={this.state.url} onPress={() => {
               this.props.navigation.navigate('Meal');
@@ -195,6 +196,7 @@ class MonthlySchedule extends Component {
   }
 }
 
+//메인 오늘학식
 class Meal extends Component {
   state = {
     meal: null,
@@ -234,25 +236,28 @@ class Meal extends Component {
     else {
       content = (
         <View>
-          <View>
-            <Text style={{ fontWeight: 'bold', fontSize: 20,marginBottom :10 }}>{meal.day} 식단</Text>
-          </View>
           <View style={{ flexDirection: 'row' }}>
-            <View>
-              <Text style={{ fontWeight: 'bold', fontSize: 16 }}>학식</Text>
-              <Text style={{ marginBottom :10 }}>{meal.lunch.a.diet}                      </Text>
-              <Text style={{ fontWeight: 'bold', fontSize: 16 }}>일품</Text>
-              <Text style={{ marginBottom :10 }}>{meal.lunch.b.diet}</Text>
-              <View style={{ flexDirection: 'row' }}>
-                <Text style={{ color: 'grey' }}>주간 식단 보기</Text>
-                <MaterialIcons name="chevron-right" size={16} />
-              </View>
+            <MaterialCommunityIcons name="rice" size={20} />
+            <Text style={{ fontWeight: 'bold', fontSize: 20 }}>{meal.day} 식단</Text>
+          </View>
+          <View style={{ flexDirection: 'column'}}>
+            <View style={{ flexDirection: 'row' }}>
+              <CardView style={{backgroundColor: 'whitesmoke', margin: 5, flex: 1}}>
+                <Text style={{ fontWeight: 'bold', fontSize: 16 }}>학식</Text>
+                <Text style={{ marginBottom: 10 }}>{meal.lunch.a.diet}</Text>
+              </CardView>
+              <CardView style={{backgroundColor: 'whitesmoke', margin: 5, flex: 1}}>
+                <Text style={{ fontWeight: 'bold', fontSize: 16 }}>일품</Text>
+                <Text style={{ marginBottom: 10 }}>{meal.lunch.b.diet}</Text>
+              </CardView>
+              <CardView style={{backgroundColor: 'whitesmoke', margin: 5, flex: 1}}>
+                <Text style={{ fontWeight: 'bold', fontSize: 16 }}>석식</Text>
+                <Text style={{ marginBottom: 10 }}>{meal.dinner.a.diet}</Text>
+              </CardView>
             </View>
-            <View>
-
-              <Text style={{ fontWeight: 'bold', fontSize: 16 }}>석식</Text>
-              <Text style={{ marginBottom :10 }}>{meal.dinner.a.diet}</Text>
-
+            <View style={{ flexDirection: 'row' }}>
+              <Text style={{ color: 'grey' }}>주간 식단 보기</Text>
+              <MaterialIcons name="chevron-right" size={16} />
             </View>
           </View>
         </View>
@@ -262,10 +267,12 @@ class Meal extends Component {
       <CardView onPress={this.props.onPress} elevate={true}>
         {content}
       </CardView>
+
     );
   }
 }
 
+//메인 공지사항
 class NoticeSchedule extends Component {
   constructor(props) {
     super(props);
@@ -308,7 +315,7 @@ class NoticeSchedule extends Component {
           <View style={{ flexDirection: 'column' }}>
 
             <Text style={{ fontWeight: 'bold', fontSize: 16 }}>제목</Text>
-            <Text style={{marginBottom: 16}}>{this.state.dataSource.map(  //json값에서 조건으로 빼오기
+            <Text style={{ marginBottom: 16 }}>{this.state.dataSource.map(  //json값에서 조건으로 빼오기
               function (elem, index) {
                 if (index == 0)
                   return elem.board_title;
@@ -316,7 +323,7 @@ class NoticeSchedule extends Component {
             )}
             </Text>
             <Text style={{ fontWeight: 'bold', fontSize: 16 }}>날짜</Text>
-            <Text style={{marginBottom: 16}}>{this.state.dataSource.map(  //json값에서 조건으로 빼오기
+            <Text style={{ marginBottom: 16 }}>{this.state.dataSource.map(  //json값에서 조건으로 빼오기
               function (elem, index) {
                 if (index == 0)
                   return elem.board_insertdate;
@@ -324,7 +331,7 @@ class NoticeSchedule extends Component {
             )}
             </Text>
             <Text style={{ fontWeight: 'bold', fontSize: 16 }}>내용</Text>
-            <Text style={{marginBottom: 16}}>{this.state.dataSource.map(  //json값에서 조건으로 빼오기
+            <Text style={{ marginBottom: 16 }}>{this.state.dataSource.map(  //json값에서 조건으로 빼오기
               function (elem, index) {
                 if (index == 0)
                   return elem.board_content;
